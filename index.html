@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Firebase App (core) -->
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js"></script>
+
+<!-- Optional: Firebase products you want to use -->
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js"></script>
+  <title>HTML</title>
+  
+  <!-- HTML -->
+  
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <p></p>
+  <div class="app">
+    <h1>Ninja byte  Notepad</h1>
+    <textarea id="noteInput" placeholder="Write your note here..."></textarea>
+    <button onclick="addNote()">Add Note</button>
+    <button onclick="toggleDarkMode()">🌓 Toggle Dark Mode</button>
+    <button onclick="exportNotes()">⬇ Export Notes</button>
+    <ul id="noteList"></ul>
+  </div>
+  
+  <button onclick="saveToCloud()">☁ Save to Cloud</button>
+<button onclick="loadFromCloud()">☁ Load from Cloud</button>
+
+  <div style="margin-top: 20px;">
+  <!-- AdSense Ad Block -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-client="ca-pub-XXXXXXX"
+       data-ad-slot="XXXXXXX"
+       data-ad-format="auto"
+       data-full-width-responsive="true"></ins>
+  <script>
+       (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+</div>
+
+  <!-- Project -->
+  <script src="main.js"></script>
+  
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
+  
+    const firebaseConfig = {
+      apiKey: "AIzaSyDoo2j1g66-cT5gRDeZKPLN7dwI_p36_kU",
+      authDomain: "todo-2157d.firebaseapp.com",
+      projectId: "todo-2157d",
+      storageBucket: "todo-2157d.appspot.com",
+      messagingSenderId: "125562388245",
+      appId: "1:125562388245:web:fbaecab62d0feecd53f31c",
+      measurementId: "G-7N91EM7HL8"
+    };
+  
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+  
+    window.saveToCloud = function () {
+      const notes = [];
+      document.querySelectorAll('#noteList li').forEach(li => {
+        notes.push(li.textContent);
+      });
+      set(ref(db, 'notes'), notes).then(() => {
+        alert('Notes saved to Firebase!');
+      }).catch(err => console.error(err));
+    }
+  
+    window.loadFromCloud = function () {
+      const dbRef = ref(db);
+      get(child(dbRef, 'notes')).then((snapshot) => {
+        if (snapshot.exists()) {
+          const noteList = document.getElementById('noteList');
+          noteList.innerHTML = '';
+          snapshot.val().forEach(note => {
+            const li = document.createElement('li');
+            li.textContent = note;
+            noteList.appendChild(li);
+          });
+        } else {
+          alert("No data found.");
+        }
+      }).catch(err => console.error(err));
+    }
+  </script>
+  
+
+</body>
+</html>
